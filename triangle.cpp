@@ -1,6 +1,5 @@
 #include <iostream>
 #include <algorithm>
-#include <unordered_map>
 #include <vector>
 using namespace std;
 
@@ -20,17 +19,18 @@ int ncr1(int n, int r)
 }
 
 
-long long int triangles(vector<int> a, int np, int parallel, int p)
+int triangles(vector<int> a, int np, int parallel, int p)
 {
     //cout<<np<<" "<<parallel<<" "<<p<<endl;
 	if(np < 3) 
 		return 0;
 	int i=1;
-	long long int ans=0; 
+	int ans=0; 
 	//cout<<a.size()<<endl;
-	for(int j=0;j<a.size();j++,i++) 
+	int n = a.size();
+	for(int j=0;j<n;j++,i++) 
 	{
-		int remain_np = a.size()-i;
+		int remain_np = n-i;
 		//cout<<"---"<<remain_np<<endl;
 		//cout<<"ans"<<ans<<endl;
 		if(remain_np >= 2) {
@@ -50,7 +50,7 @@ int main()
 	int n;
 	cin>>n;
 	vector<int > a;
-	unordered_map<int, int> hm;
+	int count[180]={0};
 	for (int i = 0; i < n; ++i)
 	{
 		int x;
@@ -58,26 +58,24 @@ int main()
 		char ch;
 		if(i<n-1)
 			cin>>ch;
-		if(hm.find(x)!=hm.end()) {
-			hm[x]++;
-		} else {
-			hm.emplace(x,1);
-		}
+		count[x-(-89)]++;// -89<=angle<=90
 	}
 
-	unordered_map<int, int > :: iterator it;
 	int p=0,parallel=0, non_parallel=0;
-	for ( it = hm.begin(); it!= hm.end(); it++)
+	for ( int i = 0; i < 180; ++i)
 	{
-		a.push_back(it->second);
-		if(it->second > 1) {
-			p++;
-			parallel+=it->second;
+		if(count[i]>0)
+		{
+			a.push_back(count[i]);
+			non_parallel++;
 		}
-		non_parallel++;
+		if(count[i] > 1) {
+			p++;
+			parallel+=count[i];
+		}
 	}
 	sort(a.begin(),a.end(), myfunction);
-	long long int res = triangles(a, non_parallel,parallel,p);
+	int res = triangles(a, non_parallel,parallel,p);
 	cout<<res;
 	return 0;
 }
